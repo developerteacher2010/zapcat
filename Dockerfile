@@ -1,0 +1,16 @@
+FROM php:8.2-apache
+
+RUN docker-php-ext-install mysqli
+
+RUN a2enmod rewrite
+
+WORKDIR /var/www/html
+
+COPY . /var/www/html/
+
+RUN chown -R www-data:www-data /var/www/html \
+    && chmod -R 755 /var/www/html \
+    && mkdir -p /var/www/html/uploads \
+    && chown -R www-data:www-data /var/www/html/uploads
+
+EXPOSE 80
