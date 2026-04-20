@@ -13,13 +13,16 @@ if (!$empresa) {
     redirecionar('../login.php');
 }
 
-$assinaturaOk = acesso_liberado($empresa);
+$acessoOk = acesso_liberado($empresa);
+$whats = "5531989356164";
+$mensagem = "Olá! Acabei de me cadastrar no sistema e quero ativar meu acesso. Empresa: " . $empresa['nome'];
+$linkWhats = "https://wa.me/" . $whats . "?text=" . urlencode($mensagem);
 ?>
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>Assinatura</title>
+    <title>Ativação de acesso</title>
     <link rel="stylesheet" href="../assets/css/style.css">
 </head>
 <body>
@@ -30,7 +33,7 @@ $assinaturaOk = acesso_liberado($empresa);
         <a href="dashboard.php">Dashboard</a>
         <a href="produtos.php">Produtos</a>
         <a href="../catalogo.php?empresa=<?= (int)$empresa['id'] ?>" target="_blank">Ver catálogo</a>
-        <a class="active" href="assinatura.php">Assinatura</a>
+        <a class="active" href="assinatura.php">Ativação</a>
         <a href="logout.php">Sair</a>
     </nav>
 </aside>
@@ -38,54 +41,52 @@ $assinaturaOk = acesso_liberado($empresa);
 <main class="main">
     <div class="topbar">
         <div>
-            <h1>Assinatura</h1>
-            <p>Gerencie o acesso da sua loja à plataforma.</p>
+            <h1>Ativação de acesso</h1>
+            <p>Finalize o atendimento pelo WhatsApp para liberar seu painel.</p>
         </div>
     </div>
 
-    <?php if ($assinaturaOk): ?>
+    <?php if ($acessoOk): ?>
         <div class="alert success">
-            Seu acesso está liberado.
+            Seu acesso já está liberado.
         </div>
     <?php else: ?>
         <div class="alert error">
-            Seu acesso está inativo no momento.
+            Seu acesso ainda não foi ativado.
         </div>
     <?php endif; ?>
 
     <section class="metric-grid">
         <div class="panel-card">
+            <div class="metric-label">Empresa</div>
+            <div class="metric-value" style="font-size:24px;"><?= e($empresa['nome']) ?></div>
+        </div>
+
+        <div class="panel-card">
             <div class="metric-label">Tipo de acesso</div>
-            <div class="metric-value">
+            <div class="metric-value" style="font-size:24px;">
                 <?= isset($empresa['tipo_acesso']) ? e(ucfirst($empresa['tipo_acesso'])) : 'Pago' ?>
             </div>
         </div>
 
         <div class="panel-card">
             <div class="metric-label">Status</div>
-            <div class="metric-value <?= $assinaturaOk ? 'green' : '' ?>">
-                <?= $assinaturaOk ? 'Liberado' : 'Inativo' ?>
-            </div>
-        </div>
-
-        <div class="panel-card">
-            <div class="metric-label">Validade</div>
-            <div class="metric-value" style="font-size:22px;">
-                <?= !empty($empresa['data_expiracao']) ? date('d/m/Y', strtotime($empresa['data_expiracao'])) : 'Sem prazo' ?>
+            <div class="metric-value" style="font-size:24px;">
+                <?= e(ucfirst($empresa['status'])) ?>
             </div>
         </div>
     </section>
 
     <section class="panel-card">
-        <h3 style="margin-bottom:10px;">Pagamento</h3>
-        <p style="color:#6b6b6b; line-height:1.7; margin-bottom:18px;">
-            Se o cliente for pago, ele pode renovar por aqui. Se for grátis ou VIP, você pode controlar manualmente pelo banco.
+        <h3 style="margin-bottom:10px;">Próximo passo</h3>
+        <p style="color:#6b6b6b; line-height:1.8; margin-bottom:18px;">
+            Para ativar seu acesso, fale conosco no WhatsApp. Assim que o pagamento for confirmado,
+            sua conta será liberada manualmente no sistema.
         </p>
 
-        <div style="display:flex;gap:12px;flex-wrap:wrap;">
-            <a href="../pagamento/criar_pagamento.php" class="btn btn-primary">Assinar agora</a>
-            <a href="dashboard.php" class="btn btn-secondary">Voltar ao painel</a>
-        </div>
+        <a href="<?= $linkWhats ?>" target="_blank" class="btn btn-primary">
+            Falar no WhatsApp para ativar
+        </a>
     </section>
 </main>
 

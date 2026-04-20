@@ -3,23 +3,24 @@ include '../config.php';
 include '../helpers.php';
 
 exigir_login_cliente();
+
 $empresa = empresa_logada($conn);
 
 if (!$empresa) {
-    session_destroy();
+    if (session_status() === PHP_SESSION_ACTIVE) {
+        session_destroy();
+    }
     redirecionar('../login.php');
 }
 
-$valor = 49;
-if ($empresa['plano'] === 'starter') $valor = 29;
-if ($empresa['plano'] === 'premium') $valor = 79;
+$valor = 79.90;
 
 $payload = [
     'items' => [[
-        'title' => 'Plano ' . ucfirst($empresa['plano']) . ' ZapPro',
+        'title' => 'Plano ZapPro',
         'quantity' => 1,
         'currency_id' => 'BRL',
-        'unit_price' => $valor
+        'unit_price' => (float)$valor
     ]],
     'external_reference' => (string)$empresa['id'],
     'notification_url' => $app_url . '/pagamento/webhook.php',
